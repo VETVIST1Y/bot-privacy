@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0b0f14" />
   <title>PUBG Rank Menu</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root{
       --bg:#0b0f14;
@@ -14,6 +15,7 @@
       --muted:#9aa6b2;
       --line:#25303d;
       --accent:#f3b21a;
+      --danger:#ff6b6b;
     }
     *{box-sizing:border-box}
     body{
@@ -25,100 +27,48 @@
       color:var(--text);
       min-height:100vh;
     }
-    .wrap{
-      max-width:520px;
-      margin:0 auto;
-      padding:24px 16px 40px;
-    }
-    .hero{
-      text-align:center;
-      padding:18px 10px 22px;
-    }
+    .wrap{max-width:520px;margin:0 auto;padding:24px 16px 40px}
+    .hero{text-align:center;padding:18px 10px 22px}
     .logo{
-      width:78px;height:78px;
-      border-radius:24px;
-      margin:0 auto 14px;
-      display:grid;
-      place-items:center;
-      background:linear-gradient(145deg,#1a2230,#0d1218);
-      border:1px solid var(--line);
-      box-shadow:0 12px 30px rgba(0,0,0,.35);
-      font-size:38px;
+      width:78px;height:78px;border-radius:24px;margin:0 auto 14px;
+      display:grid;place-items:center;background:linear-gradient(145deg,#1a2230,#0d1218);
+      border:1px solid var(--line);box-shadow:0 12px 30px rgba(0,0,0,.35);font-size:38px;
     }
-    h1{font-size:28px;margin:0 0 6px}
-    .sub{color:var(--muted);font-size:14px}
+    h1{font-size:28px;margin:0 0 6px}.sub{color:var(--muted);font-size:14px}
     .card{
-      background:rgba(20,26,34,.94);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:18px;
-      margin-bottom:14px;
-      box-shadow:0 10px 30px rgba(0,0,0,.2);
+      background:rgba(20,26,34,.94);border:1px solid var(--line);border-radius:18px;
+      padding:18px;margin-bottom:14px;box-shadow:0 10px 30px rgba(0,0,0,.2);
     }
-    .rank{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:14px;
-    }
+    .rank{display:flex;align-items:center;justify-content:space-between;gap:14px}
     .rank .title{font-size:13px;color:var(--muted);margin-bottom:4px}
     .rank .value{font-size:23px;font-weight:800}
     .badge{
-      width:62px;height:62px;border-radius:18px;
-      display:grid;place-items:center;
-      background:var(--card2);
-      border:1px solid var(--line);
-      font-size:30px;
+      width:62px;height:62px;border-radius:18px;display:grid;place-items:center;
+      background:var(--card2);border:1px solid var(--line);font-size:30px;flex:0 0 auto;
     }
-    .grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-    }
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     button{
-      width:100%;
-      min-height:74px;
-      border:none;
-      border-radius:16px;
-      background:var(--card);
-      color:var(--text);
-      border:1px solid var(--line);
-      font-size:15px;
-      font-weight:700;
-      padding:14px;
-      text-align:left;
-      cursor:pointer;
+      width:100%;min-height:74px;border:none;border-radius:16px;background:var(--card);
+      color:var(--text);border:1px solid var(--line);font-size:15px;font-weight:700;
+      padding:14px;text-align:left;cursor:pointer;
     }
-    button:active{transform:scale(.985)}
-    .ico{display:block;font-size:24px;margin-bottom:6px}
+    button:active{transform:scale(.985)}.ico{display:block;font-size:24px;margin-bottom:6px}
     .panel{
-      display:none;
-      margin-top:14px;
-      background:var(--card2);
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:16px;
+      display:none;margin-top:14px;background:var(--card2);border:1px solid var(--line);
+      border-radius:16px;padding:16px;
     }
-    .panel.active{display:block}
-    .panel h2{font-size:18px;margin:0 0 10px}
+    .panel.active{display:block}.panel h2{font-size:18px;margin:0 0 10px}
     .panel p,.panel li{color:var(--muted);font-size:14px;line-height:1.6}
     .panel ul{padding-left:20px;margin-bottom:0}
     .toprow{
-      display:flex;
-      justify-content:space-between;
-      padding:10px 0;
-      border-bottom:1px solid var(--line);
-      color:var(--muted);
-      font-size:14px;
+      display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;
+      border-bottom:1px solid var(--line);color:var(--muted);font-size:14px;
     }
-    .toprow:last-child{border-bottom:none}
-    .toprow strong{color:var(--text)}
-    footer{
-      text-align:center;
-      color:#6f7b88;
-      font-size:12px;
-      padding-top:14px;
-    }
+    .toprow:last-child{border-bottom:none}.toprow strong{color:var(--text);text-align:right}
+    .player-left{min-width:0}.player-name{color:var(--text);font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .player-rank{font-size:12px;color:var(--muted);margin-top:3px}
+    .status-error{color:var(--danger)!important}
+    footer{text-align:center;color:#6f7b88;font-size:12px;padding-top:14px}
   </style>
 </head>
 <body>
@@ -132,74 +82,160 @@
     <section class="card rank">
       <div>
         <div class="title">Твой ранг</div>
-        <div class="value">Открой профиль в боте</div>
+        <div class="value" id="mainRank">Открой профиль в боте</div>
       </div>
       <div class="badge">🏆</div>
     </section>
 
     <section class="grid">
-      <button onclick="showPanel('ranks')">
-        <span class="ico">🏆</span>
-        Ранги
-      </button>
-      <button onclick="showPanel('stats')">
-        <span class="ico">📊</span>
-        Статистика
-      </button>
-      <button onclick="showPanel('top')">
-        <span class="ico">🥇</span>
-        Топ игроков
-      </button>
-      <button onclick="showPanel('help')">
-        <span class="ico">❓</span>
-        Как это работает
-      </button>
+      <button onclick="showPanel('ranks')"><span class="ico">🏆</span>Ранги</button>
+      <button onclick="showPanel('stats')"><span class="ico">📊</span>Статистика</button>
+      <button onclick="showPanel('top')"><span class="ico">🥇</span>Топ игроков</button>
+      <button onclick="showPanel('help')"><span class="ico">❓</span>Как это работает</button>
     </section>
 
     <section id="ranks" class="panel">
       <h2>🏆 Ранги</h2>
-      <p>Здесь можно разместить список всех рангов бота и условия перехода на следующий уровень.</p>
+      <p>Каждые 100 RP — новое деление. После Ас I лучшие игроки могут получить Завоевателя.</p>
       <ul>
-        <li>Bronze</li>
-        <li>Silver</li>
-        <li>Gold</li>
-        <li>Platinum</li>
-        <li>Diamond</li>
-        <li>Crown</li>
-        <li>Ace</li>
+        <li>Бронза V → I</li><li>Серебро V → I</li><li>Золото V → I</li>
+        <li>Платина V → I</li><li>Алмаз V → I</li><li>Корона V → I</li><li>Ас V → I</li>
+        <li>Завоеватель — глобальный TOP-100 после Ас I</li>
       </ul>
     </section>
 
     <section id="stats" class="panel">
       <h2>📊 Статистика</h2>
-      <p>Пока это демонстрационный экран. Позже сюда можно подключить реальные данные пользователя из бота.</p>
-      <div class="toprow"><span>Игры</span><strong>—</strong></div>
-      <div class="toprow"><span>Победы</span><strong>—</strong></div>
-      <div class="toprow"><span>Очки</span><strong>—</strong></div>
+      <p id="statsStatus">Нажми «Статистика», чтобы загрузить данные.</p>
+      <div class="toprow"><span>Игрок</span><strong id="statName">—</strong></div>
+      <div class="toprow"><span>Ранг</span><strong id="statRank">—</strong></div>
+      <div class="toprow"><span>RP</span><strong id="statScore">—</strong></div>
+      <div class="toprow"><span>Глобальное место</span><strong id="statPlace">—</strong></div>
+      <div class="toprow"><span>Матчей</span><strong id="statMatches">—</strong></div>
+      <div class="toprow"><span>Джекпотов +100</span><strong id="statJackpots">—</strong></div>
+      <div class="toprow"><span>Лучший RP</span><strong id="statBestScore">—</strong></div>
+      <div class="toprow"><span>Сезон</span><strong id="statSeason">—</strong></div>
     </section>
 
     <section id="top" class="panel">
-      <h2>🥇 Топ игроков</h2>
-      <p>Здесь позже можно вывести настоящий лидерборд из базы бота.</p>
-      <div class="toprow"><span>1. Игрок</span><strong>—</strong></div>
-      <div class="toprow"><span>2. Игрок</span><strong>—</strong></div>
-      <div class="toprow"><span>3. Игрок</span><strong>—</strong></div>
+      <h2>🥇 Глобальный TOP-10</h2>
+      <p id="topStatus">Нажми «Топ игроков», чтобы загрузить рейтинг.</p>
+      <div id="topList"></div>
     </section>
 
     <section id="help" class="panel">
       <h2>❓ Как это работает</h2>
-      <p>Играй, получай очки и поднимай ранг. Точные правила начисления зависят от системы твоего бота.</p>
+      <p>Используй /rankup в боте, получай или теряй RP и поднимайся в глобальном рейтинге. Статистика Mini App берётся из той же базы, что и /profile и /globaltop.</p>
     </section>
 
     <footer>PUBG Rank Bot</footer>
   </main>
 
   <script>
+    const tg = window.Telegram?.WebApp;
+    if (tg) { tg.ready(); tg.expand(); }
+
+    // ЗАМЕНИ ТОЛЬКО ЭТУ СТРОКУ после публикации pubgrank_api_server.py.
+    const API_BASE = "https://YOUR-PUBG-RANK-API.onrender.com";
+
     function showPanel(id){
       document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
       const el = document.getElementById(id);
+      if (!el) return;
       el.classList.add('active');
+      if (id === 'stats') loadStats();
+      if (id === 'top') loadTop();
       el.scrollIntoView({behavior:'smooth', block:'nearest'});
+    }
+
+    async function apiFetch(path){
+      const headers = {};
+      if (tg?.initData) headers['X-Telegram-Init-Data'] = tg.initData;
+      const response = await fetch(`${API_BASE}${path}`, {headers, cache:'no-store'});
+      let data = {};
+      try { data = await response.json(); } catch (_) {}
+      if (!response.ok) {
+        const err = new Error(data.message || data.error || `HTTP ${response.status}`);
+        err.status = response.status;
+        throw err;
+      }
+      return data;
+    }
+
+    async function loadStats(){
+      const status = document.getElementById('statsStatus');
+      status.classList.remove('status-error');
+
+      if (!tg?.initData) {
+        status.textContent = 'Открой Mini App именно через Menu Button бота.';
+        status.classList.add('status-error');
+        return;
+      }
+
+      status.textContent = 'Загрузка...';
+      try {
+        const data = await apiFetch('/api/stats');
+        const p = data.player;
+        document.getElementById('statName').textContent = p.name || 'Игрок';
+        document.getElementById('statRank').textContent = p.rank || 'Без ранга';
+        document.getElementById('statScore').textContent = p.score ?? 0;
+        document.getElementById('statPlace').textContent = p.global_place ? `#${p.global_place}` : '—';
+        document.getElementById('statMatches').textContent = p.matches ?? 0;
+        document.getElementById('statJackpots').textContent = p.jackpots ?? 0;
+        document.getElementById('statBestScore').textContent = p.best_score ?? 0;
+        document.getElementById('statSeason').textContent = data.season?.number ?? '—';
+        document.getElementById('mainRank').textContent = p.rank || 'Без ранга';
+        status.textContent = p.banned ? 'Рейтинг аккаунта ограничен.' : 'Данные профиля загружены.';
+      } catch (error) {
+        console.error(error);
+        status.textContent = error.status === 404
+          ? 'Профиль ещё не создан. Открой бота и используй /start.'
+          : 'Не удалось загрузить статистику.';
+        status.classList.add('status-error');
+      }
+    }
+
+    async function loadTop(){
+      const status = document.getElementById('topStatus');
+      const list = document.getElementById('topList');
+      status.classList.remove('status-error');
+      status.textContent = 'Загрузка...';
+      list.innerHTML = '';
+
+      try {
+        const data = await apiFetch('/api/top');
+        const players = Array.isArray(data.top) ? data.top : [];
+        if (!players.length) {
+          status.textContent = 'Рейтинг пока пуст.';
+          return;
+        }
+
+        status.textContent = `Сезон ${data.season}`;
+        for (const player of players) {
+          const row = document.createElement('div');
+          row.className = 'toprow';
+
+          const left = document.createElement('div');
+          left.className = 'player-left';
+          const name = document.createElement('div');
+          name.className = 'player-name';
+          const medal = player.place === 1 ? '🥇 ' : player.place === 2 ? '🥈 ' : player.place === 3 ? '🥉 ' : '';
+          name.textContent = `${medal}${player.place}. ${player.name || 'Игрок'}`;
+          const rank = document.createElement('div');
+          rank.className = 'player-rank';
+          rank.textContent = player.rank || 'Без ранга';
+          left.append(name, rank);
+
+          const score = document.createElement('strong');
+          score.textContent = `${player.score ?? 0} RP`;
+          row.append(left, score);
+          list.appendChild(row);
+        }
+      } catch (error) {
+        console.error(error);
+        status.textContent = 'Не удалось загрузить глобальный TOP.';
+        status.classList.add('status-error');
+      }
     }
   </script>
 </body>
